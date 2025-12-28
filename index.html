@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHIN LA PYAE WOON - Professional Portfolio</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family: 'Courier New', monospace; }
+html, body { height: 100%; width: 100%; overflow-x: hidden; }
+body { background: black; color: #00ff99; line-height: 1.6; position: relative; }
+
+#matrix-canvas, #particles-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none;
+}
+
+/* Header */
+header { text-align: center; background: rgba(0,0,0,0.85); padding: 60px 15px; color: #00ff99; text-shadow: 0 0 10px #0ff; z-index: 1; position: relative; }
+header h1 { font-size: 3em; letter-spacing: 2px; }
+header p { font-size: 1.3em; margin-top: 10px; font-weight: 500; color: #0ff; }
+
+
+
+/* Sections */
+section { max-width: 1100px; margin: 50px auto; position: relative; z-index: 1; padding: 0 15px; }
+section h2 { text-align: center; font-size: 2.2em; margin-bottom: 40px; color: #00ff99; text-shadow: 0 0 5px #0ff; }
+
+.category { margin-bottom: 50px; }
+.category h3 { color: #0ff; margin-bottom: 25px; font-size: 1.7em; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 8px #0ff; }
+
+.skills-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+
+/* Cards with glitch/flicker animation and neon hover effect */
+.skill-card {
+    background: rgba(0,0,0,0.95);
+    border: 1px solid #0ff;
+    color: #00ff99;
+    padding: 20px;
+    border-radius: 15px;
+    flex: 1 1 calc(45% - 20px);
+    box-shadow: 0 0 10px #0ff, 0 0 20px #0ff inset;
+    transition: transform 0.3s, box-shadow 0.3s, color 0.2s, text-shadow 0.2s;
+    cursor: default;
+    font-size: 1em;
+    text-shadow: 0 0 3px #0ff;
+    position: relative;
+    animation: flicker 2s infinite;
+}
+.skill-card:hover {
+    transform: translateY(-6px);
+    animation: neon-glitch 1s infinite;
+}
+
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 22%, 24%, 55% { opacity: 0.8; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff inset; }
+}
+
+/* Neon glitch effect */
+@keyframes neon-glitch {
+    0% { text-shadow: 0 0 5px #0f0, 2px 2px 10px #0ff, -2px -2px 10px #f00; color: #0ff; }
+    25% { text-shadow: 0 0 5px #f00, 2px -2px 10px #0f0, -2px 2px 10px #0ff; color: #0f0; }
+    50% { text-shadow: 0 0 5px #00f, 2px 2px 10px #f00, -2px -2px 10px #0f0; color: #f00; }
+    75% { text-shadow: 0 0 5px #0ff, 2px -2px 10px #00f, -2px 2px 10px #f00; color: #00f; }
+    100% { text-shadow: 0 0 5px #0f0, 2px 2px 10px #0ff, -2px -2px 10px #f00; color: #0ff; }
+}
+
+/* Footer */
+footer { text-align: center; padding: 30px 15px; background: rgba(0,0,0,0.85); color: #00ff99; font-size: 0.95em; text-shadow: 0 0 5px #0ff; margin-top: 50px; z-index: 1; position: relative; }
+
+/* Responsive cards */
+@media (max-width: 1200px) { .skill-card { flex: 1 1 calc(50% - 20px); } }
+@media (max-width: 900px) { .skill-card { flex: 1 1 100%; } }
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+<canvas id="particles-canvas"></canvas>
+
+<header>
+    <h1>KHIN LA PYAE WOON</h1>
+    <p>AI-Enhanced Ethical Hacking | Cybersecurity | Digital Forensics</p>
+    <p>Ethical Hacker Certified-Cisco Networking Academy</p>
+    <p>In Progress*Certified Ethical Hacker-CEH Prep - EC-Council</p>
+
+    <!-- Social / Contact Icons -->
+    <!-- Social / Contact Icons Horizontal Bar -->
+<div class="social-icons" style="display:flex; justify-content:center; gap:30px; margin-top:20px;">
+    <!-- GitHub -->
+    <a href="https://github.com/khinlapyaewoon-cyberdev" target="_blank" class="icon" title="GitHub">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#00ff99" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 17.3 3.438 21.8 8.207 23.54C8.805 23.64 9.025 23.27 9.025 22.95C9.025 22.67 9.015 21.93 9.01 20.97C5.672 21.63 4.968 19.5 4.968 19.5C4.422 18.09 3.633 17.7 3.633 17.7C2.547 17 3.715 17.01 3.715 17.01C4.922 17.08 5.554 18.23 5.554 18.23C6.625 20 8.422 19.53 9.05 19.22C9.15 18.45 9.462 17.95 9.81 17.65C7.145 17.35 4.343 16.29 4.343 11.61C4.343 10.29 4.805 9.22 5.57 8.38C5.445 8.08 5.045 6.82 5.675 5.15C5.675 5.15 6.625 4.84 9.025 6.44C9.925 6.17 10.885 6.03 11.845 6.03C12.805 6.03 13.765 6.17 14.665 6.44C17.065 4.84 18.015 5.15 18.015 5.15C18.645 6.82 18.245 8.08 18.12 8.38C18.885 9.22 19.345 10.29 19.345 11.61C19.345 16.3 16.535 17.34 13.86 17.64C14.28 18.03 14.655 18.76 14.655 19.88C14.655 21.45 14.645 22.64 14.645 22.95C14.645 23.27 14.86 23.65 15.465 23.54C20.238 21.8 23.678 17.3 23.678 12C23.678 5.37 18.308 0 12 0Z"/>
+        </svg>
+    </a>
+
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/khin-la-pyae-woon-ba59183a2" target="_blank" class="icon" title="LinkedIn">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#00ff99" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.785-1.75-1.752s.784-1.752 1.75-1.752 1.75.785 1.75 1.752-.784 1.752-1.75 1.752zm13.5 11.268h-3v-5.604c0-1.337-.026-3.064-1.867-3.064-1.867 0-2.152 1.46-2.152 2.967v5.701h-3v-10h2.879v1.367h.041c.401-.761 1.379-1.562 2.837-1.562 3.033 0 3.592 1.997 3.592 4.591v5.604z"/>
+        </svg>
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/qr/MJYX74CQ5VA4D1" target="_blank" class="icon" title="WhatsApp">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#00ff99" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.52 3.478c-2.113-2.112-4.894-3.28-7.86-3.28-6.074 0-11 4.926-11 11 0 1.947.51 3.855 1.48 5.53l-1.56 5.7 5.857-1.536c1.635.893 3.45 1.37 5.287 1.37 6.073 0 11-4.926 11-11 0-2.968-1.168-5.748-3.28-7.86zm-7.66 17.016c-1.583 0-3.137-.426-4.475-1.23l-.32-.195-3.475.91.926-3.417-.21-.352c-.91-1.515-1.39-3.238-1.39-4.99 0-5.07 4.13-9.2 9.2-9.2 2.457 0 4.76.956 6.497 2.693 1.738 1.738 2.694 4.04 2.694 6.497 0 5.07-4.13 9.2-9.2 9.2zm5.038-7.057c-.28-.14-1.657-.818-1.915-.912-.257-.094-.444-.14-.63.14-.188.28-.728.912-.893 1.098-.164.188-.328.21-.608.07-.28-.14-1.18-.434-2.25-1.38-.832-.74-1.393-1.655-1.557-1.936-.164-.28-.018-.43.124-.57.127-.127.28-.328.42-.492.14-.164.186-.28.28-.466.094-.188.047-.352-.023-.492-.07-.14-.63-1.52-.863-2.082-.227-.546-.457-.472-.63-.48-.164-.006-.352-.007-.54-.007s-.492.07-.75.352c-.257.28-.98.957-.98 2.332 0 1.374 1.004 2.703 1.145 2.892.14.188 1.975 3.02 4.78 4.233.668.288 1.188.46 1.593.588.668.21 1.277.18 1.758.11.537-.077 1.657-.677 1.892-1.33.233-.655.233-1.216.164-1.33-.07-.115-.257-.188-.537-.328z"/>
+        </svg>
+    </a>
+</div>
+
+</header>
+
+
+<section>
+    <h2>Professional Skills</h2>
+
+    <!-- Ethical Hacking -->
+<div class="category">
+    <h3>🛡️ Ethical Hacking</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🛡️ Analyze network scans, vulnerability outputs, and system configurations</div>
+        <div class="skill-card">🛡️ Conduct penetration testing within authorized lab or controlled environments</div>
+        <div class="skill-card">🛡️ Identify security misconfigurations with exploitable potential</div>
+        <div class="skill-card">🛡️ Reconstruct attacker reconnaissance workflows for assessment purposes</div>
+        <div class="skill-card">🛡️ Analyze theoretical exploit chains and attack paths</div>
+        <div class="skill-card">🛡️ Assess exploit feasibility without payload execution</div>
+        <div class="skill-card">🛡️ Evaluate attack surface exposure and privilege escalation logic</div>
+        <div class="skill-card">🛡️ Assess phishing and social engineering exposure ethically</div>
+        <div class="skill-card">🛡️ Produce structured penetration testing findings and documentation</div>
+        <div class="skill-card">🛡️ Apply OWASP, PTES, and NIST ethical hacking frameworks</div>
+        <div class="skill-card">🛡️ Apply adversarial reasoning aligned with cyber kill chain phases</div>
+    </div>
+</div>
+
+<!-- Cybersecurity -->
+<div class="category">
+    <h3>🔐 Cybersecurity</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🔐 Analyze CVE, CVSS, EPSS, and CISA KEV for threat prioritization</div>
+        <div class="skill-card">🔐 Perform risk assessment, fallback logic design, and exploitability scoring</div>
+        <div class="skill-card">🔐 Design and deploy defensive security tools and automated pipelines</div>
+        <div class="skill-card">🔐 Apply intrusion detection concepts, anomaly analysis, and log correlation</div>
+        <div class="skill-card">🔐 Design secure system architectures and security policies</div>
+        <div class="skill-card">🔐 Coordinate response to real-time security alerts</div>
+        <div class="skill-card">🔐 Develop incident response plans and security playbooks</div>
+        <div class="skill-card">🔐 Enforce system hardening and baseline security controls</div>
+        <div class="skill-card">🔐 Assess cloud security posture across AWS, Azure, and GCP</div>
+        <div class="skill-card">🔐 Apply encryption, PKI, and cryptographic key management principles</div>
+        <div class="skill-card">🔐 Implement access control and identity management best practices</div>
+        <div class="skill-card">🔐 Support SOC operations and alert triage processes</div>
+        <div class="skill-card">🔐 Evaluate compliance requirements and regulatory frameworks</div>
+    </div>
+</div>
+
+<!-- Threat Intelligence -->
+<div class="category">
+    <h3>🧠 Threat Intelligence & Analysis</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🧠 Collect and analyze intelligence from reconnaissance data, logs, and OSINT</div>
+        <div class="skill-card">🧠 Assess attacker intent, capability, and motivation</div>
+        <div class="skill-card">🧠 Correlate indicators of compromise with adversary behaviors</div>
+        <div class="skill-card">🧠 Map observed threats to MITRE ATT&CK techniques</div>
+        <div class="skill-card">🧠 Perform contextual, risk-based intelligence prioritization</div>
+        <div class="skill-card">🧠 Track emerging threats, zero-day patterns, and exploit trends</div>
+        <div class="skill-card">🧠 Generate actionable intelligence outputs for security teams</div>
+        <div class="skill-card">🧠 Support strategic, operational, and tactical intelligence workflows</div>
+        <div class="skill-card">🧠 Analyze threat actor campaigns and long-term behaviors</div>
+        <div class="skill-card">🧠 Align intelligence findings with cyber kill chain stages</div>
+    </div>
+</div>
+
+<!-- Threat Modeling & Risk Engineering -->
+<div class="category">
+    <h3>🧩 Threat Modeling & Risk Engineering</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🧩 Build threat models for systems, applications, and networks</div>
+        <div class="skill-card">🧩 Identify critical assets, trust boundaries, and attack vectors</div>
+        <div class="skill-card">🧩 Apply STRIDE, DREAD, and quantitative risk-scoring methodologies</div>
+        <div class="skill-card">🧩 Engineer mitigation strategies using structured risk scoring and business impact analysis</div>
+        <div class="skill-card">🧩 Translate technical security risks into business and operational impact</div>
+        <div class="skill-card">🧩 Design secure-by-design and secure-by-default architectures</div>
+        <div class="skill-card">🧩 Embed compliance and regulatory constraints into security architecture decisions</div>
+        <div class="skill-card">🧩 Incorporate adversary behaviors and kill chain insights into system-level threat models</div>
+        <div class="skill-card">🧩 Integrate threat modeling into SDLC and DevSecOps Workflows</div>
+        <div class="skill-card">🧩 Continuously update threat models based on new intelligence and incidents</div>
+    </div>
+</div>
+
+<!-- Blue Team -->
+<div class="category">
+    <h3>🟦 Blue Team (Defensive Security)</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🟦 Design and tune detection logic for abnormal behavior</div>
+        <div class="skill-card">🟦 Perform operational log analysis across systems and networks</div>
+        <div class="skill-card">🟦 Conduct alert triage and false-positive reduction</div>
+        <div class="skill-card">🟦 Operate SOC-style detection and response workflows</div>
+        <div class="skill-card">🟦 Apply layered defense and defense-in-depth strategies</div>
+        <div class="skill-card">🟦 Develop monitoring dashboards and alerting mechanisms</div>
+        <div class="skill-card">🟦 Execute incident containment and recovery actions</div>
+        <div class="skill-card">🟦 Analyze malware behavior and anomalous activity</div>
+        <div class="skill-card">🟦 Harden endpoints and servers against common attack vectors</div>
+    </div>
+</div>
+
+<!-- Red Team -->
+<div class="category">
+    <h3>🟥 Red Team (Adversarial Thinking)</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🟥 Apply attacker mindset to identify systemic weaknesses</div>
+        <div class="skill-card">🟥 Model reconnaissance and enumeration from an adversary perspective</div>
+        <div class="skill-card">🟥 Reason about exploit viability without execution</div>
+        <div class="skill-card">🟥 Analyze attack surface exposure and escalation paths</div>
+        <div class="skill-card">🟥 Assess ethical social engineering and phishing risk</div>
+        <div class="skill-card">🟥 Identify attacker-usable misconfigurations</div>
+        <div class="skill-card">🟥 Evaluate theoretical post-exploitation impact</div>
+        <div class="skill-card">🟥 Reason about lateral movement and pivoting strategies</div>
+        <div class="skill-card">🟥 Simulate adversary progression through the cyber kill chain</div>
+    </div>
+</div>
+
+<!-- Digital Forensics -->
+<div class="category">
+    <h3>🔍 Digital Forensics</h3>
+    <div class="skills-grid">
+        <div class="skill-card">🔍 Extract timelines, indicators, and patterns from digital evidence</div>
+        <div class="skill-card">🔍 Analyze logs, network traffic, and malware artifacts</div>
+        <div class="skill-card">🔍 Perform structured forensic analysis of system outputs</div>
+        <div class="skill-card">🔍 Correlate technical evidence to assess incidents</div>
+        <div class="skill-card">🔍 Produce clear and defensible forensic findings</div>
+        <div class="skill-card">🔍 Conduct post-incident forensic investigations</div>
+        <div class="skill-card">🔍 Maintain chain-of-custody and evidence integrity</div>
+        <div class="skill-card">🔍 Correlate evidence across multiple forensic sources</div>
+        <div class="skill-card">🔍 Perform memory, disk, and artifact analysis</div>
+        <div class="skill-card">🔍 Conduct time-critical forensic triage</div>
+        <div class="skill-card">🔍 Develop automated forensic evidence extraction tools</div>
+    </div>
+</div>
+
+
+    <!-- AI / ML -->
+    <div class="category">
+        <h3>🤖 Artificial Intelligence (AI / ML / DL) </h3>
+        <div class="skills-grid">
+            <div class="skill-card">🤖 Build ML + DL hybrid systems (BiLSTM + Attention)</div>
+            <div class="skill-card">🤖 Apply anomaly detection & predictive modeling</div>
+            <div class="skill-card">🤖 Feature engineering & model evaluation</div>
+            <div class="skill-card">🤖 Explainable & interpretable AI pipelines</div>
+            <div class="skill-card">🤖 Combine structured & unstructured data</div>
+            <div class="skill-card">🤖 Model monitoring & retraining pipelines</div>
+            <div class="skill-card">🤖 Semi-supervised & reinforcement learning</div>
+            <div class="skill-card">🤖 Integrate AI into cybersecurity & forensic decision workflows</div>
+            <div class="skill-card">🤖 Optimize AI models for speed, accuracy, scalability</div>
+            <div class="skill-card">🤖 Perform AI ethics & bias assessment</div>
+            <div class="skill-card">🤖 AI-assisted behavioral & psychological attack modeling</div>
+        </div>
+    </div>
+
+    <!-- LLM / NLP -->
+    <div class="category">
+        <h3>💡 LLM & NLP Applications</h3>
+        <div class="skills-grid">
+            <div class="skill-card">💡 Use LLMs for forensic/security reasoning & summarization</div>
+            <div class="skill-card">💡 Apply AI reasoning to support ethical hacking, cybersecurity and forensic decision-making</div>
+            <div class="skill-card">💡 Integrate LLM outputs with structured ML/DL pipelines</div>
+            <div class="skill-card">💡 Named entity recognition, pattern extraction, and intelligence insights</div>
+            <div class="skill-card">💡 Design LLM-assisted automation for evidence and threat analysis</div>
+            <div class="skill-card">💡 Detect hallucinations & unreliable AI outputs</div>
+            <div class="skill-card">💡 Human-in-the-loop AI workflows</div>
+            <div class="skill-card">💡 Enhance threat detection and intelligence correlation with natural language insights</div>
+            <div class="skill-card">💡 Build AI pipelines for large-scale text datasets</div>
+            <div class="skill-card">💡 AI-assisted automation for threat analysis & reporting</div>
+            <div class="skill-card">💡 Generate human-readable intelligence & forensic reports</div>
+            <div class="skill-card">💡 Ensure offline capability & privacy-aware AI usage</div>
+        </div>
+    </div>
+
+    <!-- Cloud Security & Compliance -->
+    <div class="category">
+        <h3>☁️ Cloud Security & Compliance</h3>
+        <div class="skills-grid">
+            <div class="skill-card">☁️ Cloud security architecture & controls (AWS, Azure, GCP)</div>
+            <div class="skill-card">☁️ Cloud IAM, encryption, and key management</div>
+            <div class="skill-card">☁️ Continuous compliance monitoring & reporting</div>
+            <div class="skill-card">☁️ Regulatory frameworks: ISO27001, GDPR, HIPAA, NIST</div>
+            <div class="skill-card">☁️ Cloud incident response & containment</div>
+            <div class="skill-card">☁️ Cloud vulnerability assessment & threat modeling</div>
+        </div>
+    </div>
+
+    <!-- Software Development -->
+    <div class="category">
+        <h3>💻 Software Development</h3>
+        <div class="skills-grid">
+            <div class="skill-card">💻 Design logical system workflows & modular architectures</div>
+            <div class="skill-card">💻 Decompose complex problems into components</div>
+            <div class="skill-card">💻 Reason about data flow & processing stages</div>
+            <div class="skill-card">💻 Anticipate edge cases & failures</div>
+            <div class="skill-card">💻 Maintain clarity in complex systems</div>
+            <div class="skill-card">💻 Adapt designs under constraints</div>
+            <div class="skill-card">💻 Version control, CI/CD, and collaborative coding practices</div>
+        </div>
+    </div>
+
+    <!-- Security Tool Development -->
+    <div class="category">
+        <h3>🛠️ Security Tool Development & Automation</h3>
+        <div class="skills-grid">
+            <div class="skill-card">🛠️ Design end-to-end automated security analysis tools</div>
+            <div class="skill-card">🛠️ Build scanners, analyzers, and report generators</div>
+            <div class="skill-card">🛠️ Integrate ML, DL, LLM, NLP/AI into security tooling</div>
+            <div class="skill-card">🛠️ Create extensible frameworks and plugins</div>
+            <div class="skill-card">🛠️ Generate structured outputs</div>
+            <div class="skill-card">🛠️ Develop reusable detection and scoring engines</div>
+            <div class="skill-card">🛠️ Build offline-capable and privacy-aware tools</div>
+            <div class="skill-card">🛠️ Automate repetitive security workflows & reporting</div>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2025 KHIN LA PYAE WOON | All Rights Reserved</p>
+</footer>
+
+<script>
+// Matrix background
+const matrixCanvas = document.getElementById('matrix-canvas');
+const mCtx = matrixCanvas.getContext('2d');
+function resizeMatrix() { matrixCanvas.width = window.innerWidth; matrixCanvas.height = window.innerHeight; }
+resizeMatrix();
+let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%';
+let fontSize = 16;
+let columns = Math.floor(matrixCanvas.width / fontSize);
+let drops = Array(columns).fill(1);
+function drawMatrix() {
+    mCtx.fillStyle = 'rgba(0,0,0,0.05)';
+    mCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
+    mCtx.fillStyle = '#00ff99';
+    mCtx.font = fontSize + 'px monospace';
+    for (let i=0;i<drops.length;i++) {
+        const text = letters[Math.floor(Math.random()*letters.length)];
+        mCtx.fillText(text,i*fontSize,drops[i]*fontSize);
+        if(drops[i]*fontSize>matrixCanvas.height && Math.random()>0.975) drops[i]=0;
+        drops[i]++;
+    }
+}
+setInterval(drawMatrix,50);
+window.addEventListener('resize', () => { resizeMatrix(); columns = Math.floor(matrixCanvas.width / fontSize); drops = Array(columns).fill(1); });
+
+// Floating particles
+const particleCanvas = document.getElementById('particles-canvas');
+const pCtx = particleCanvas.getContext('2d');
+function resizeParticles() { particleCanvas.width = window.innerWidth; particleCanvas.height = window.innerHeight; }
+resizeParticles();
+const numParticles = 80;
+let particles = [];
+for(let i=0;i<numParticles;i++){
+    particles.push({x: Math.random()*particleCanvas.width, y: Math.random()*particleCanvas.height, r: Math.random()*2+1, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5});
+}
+function drawParticles(){
+    pCtx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
+    for(let p of particles){
+        pCtx.beginPath();
+        pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        pCtx.fillStyle = 'rgba(0,255,153,0.4)';
+        pCtx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if(p.x<0) p.x=particleCanvas.width; if(p.x>particleCanvas.width) p.x=0;
+        if(p.y<0) p.y=particleCanvas.height; if(p.y>particleCanvas.height) p.y=0;
+    }
+}
+setInterval(drawParticles,50);
+window.addEventListener('resize',resizeParticles);
+</script>
+
+</body>
+</html>
